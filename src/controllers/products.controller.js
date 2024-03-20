@@ -44,7 +44,10 @@ router.get('/', async (req, res) => {
 router.get('/mockingproducts', async (req, res) => {
     try {
         const products = generateProducts()
-        res.json ({message: products})
+        //res.json ({message: products})
+        res.render ('home', { 
+            products,
+             style: 'style.css',})
     } catch (error) {
         console.error ('Error al obtener los products:', error.message)
         res.status(500).json({ error: 'Internal Server Error' })
