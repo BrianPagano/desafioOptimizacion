@@ -1,9 +1,13 @@
-    const { Router } = require('express')
-    const router = Router()
-    const { getProducts } = require('../utils/products.util.js')
-    const ProductsService = require ('../services/products.service.js')
-    const authorization = require('../middlewares/authorization-middleware.js')
-    const generateProducts = require ('../utils/products-mocks.util')
+const { Router } = require('express')
+const router = Router()
+const { getProducts } = require('../utils/products.util.js')
+const ProductsService = require ('../services/products.service.js')
+const authorization = require('../middlewares/authorization-middleware.js')
+const generateProducts = require ('../utils/products-mocks.util')
+const TYPES_ERROR = require('../handlers/errors/types.errors.js')
+const EErrors = require('../handlers/errors/enum-errors.js')
+const CustomError = require('../handlers/errors/Custom-Error.js')
+const generateProductErrorInfo = require('../handlers/errors/generate-product-error-info.js')
 
 router.get('/', async (req, res) => {
     try {
@@ -75,11 +79,19 @@ router.get('/:pid', async (req, res) => {
     }
 })
 
-router.post("/", authorization('admin'), async (req, res) => {
+router.post("/", authorization('admin'), async (req, res, next) => {
     try {
       const { code, description, price, stock, thumbnail, title, category } = req.body
+
+      if( !title || !description || !code || !price || !stock || !category ) {
+        CustomError.createError({
+            name: TYPES_ERROR.PRODUCT_CREATION_ERROR,
+            cause: generateProductErrorInfo ({ title, description, code, price, stock, category }),
+            message: 'Error al crear el producto',
+            code: EErrors.PRODUCT_CREATION_ERROR,
+        })
+    }
       const result = await ProductsService.addProduct({code,description,price,stock,thumbnail,title,category})
-  
       if (result.success) {
         res.status(201).json({ message: "Producto creado correctamente" })
       } else {
@@ -87,10 +99,9 @@ router.post("/", authorization('admin'), async (req, res) => {
       }
       return
     } catch (error) {
-      console.error("Error al cargar productos:", error.message)
-      res.status(500).json({ error: "Internal Server Error" })
+        next(error)
     }
-  })
+})
 
 router.put('/:pid', authorization('admin'), async (req, res) => {
     try {

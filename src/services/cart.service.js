@@ -7,7 +7,7 @@ const addCart = async () => {
       const result = await Cart.addCart()
       return result
     } catch (error) {
-        throw error
+        console.error (error)
       } 
   }
 
@@ -16,7 +16,7 @@ const addCart = async () => {
        const findCart = await Cart.getCartByID(cid)
        return findCart
    } catch (error) {
-       throw error
+       console.error (error)
      }  
  }
 
@@ -25,7 +25,7 @@ const addCart = async () => {
          const result = await Cart.addProductInCart(cid,pid)
          return result
      } catch (error) {
-         throw error
+         console.error (error)
        }  
    }
 
@@ -34,7 +34,7 @@ const addCart = async () => {
       const result = await Cart.createPurchase(NewPurchaseDTO)
       return result
   } catch (error) {
-      throw error
+      console.error (error)
     }  
 }
 
@@ -43,7 +43,7 @@ const addCart = async () => {
          const result = await Cart.updateCart(cid, updatedProducts)
          return result
      } catch (error) {
-         throw error
+         console.error (error)
        }  
    }
 
@@ -52,7 +52,7 @@ const addCart = async () => {
          const result = await Cart.updateProductQuantity(cid, pid, quantity)
          return result
      } catch (error) {
-         throw error
+         console.error (error)
        }  
    }
 
@@ -61,7 +61,7 @@ const addCart = async () => {
         const result = await Cart.deleteProductInCart(cid, pid)
         return result
     } catch (error) {
-        throw error
+        console.error (error)
       }  
    }
   
@@ -70,7 +70,7 @@ const addCart = async () => {
         const result = await Cart.deleteProductsInCart(cid)
         return result
     } catch (error) {
-        throw error
+        console.error (error)
       }  
    }
 

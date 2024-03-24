@@ -4,7 +4,6 @@ class CustomError {
         error.cause = cause
         error.name = name
         error.code = code
-
         throw error
     }
 }

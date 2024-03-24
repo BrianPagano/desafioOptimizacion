@@ -14,13 +14,7 @@ class ProductDao {
 
     async addProduct(product) {
       try {
-          const { title, description, price, thumbnail, code, stock, category } = product
-          //Valido que todos los campos son obligatorios
-          if (!title || !description || !price || !code || !stock || !category) {
-            console.error ("Todos los campos son obligatorios. Producto no agregado.")
-            return { success: false, message: "Todos los campos son obligatorios. Producto no agregado." }
-          }
-
+          const { code } = product
           //valido si ya existe el code
           const codeExist = await Products.findOne({ code: code})
           if (codeExist) {

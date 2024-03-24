@@ -6,7 +6,8 @@ const getProductByID = async pid => {
       const findID = await productReposity.getProductByID(pid)
       return findID
     } catch (error) {
-        throw error
+        console.error (error)
+        return {error: true}
       } 
   }
 
@@ -15,7 +16,7 @@ const addProduct = async product => {
       const result = await productReposity.addProduct(product) 
       return result
   } catch (error) {
-      throw error
+      console.log (error)
     }  
 }
 
@@ -23,7 +24,7 @@ const updateProduct = async productUpdated => {
   try {
        await productReposity.updateProduct(productUpdated) 
    } catch (error) {
-       throw error
+       console.error (error)
      }  
  }
 
@@ -32,7 +33,7 @@ const updateProduct = async productUpdated => {
        const result = await productReposity.deleteProduct(pid) 
        return result
    } catch (error) {
-       throw error
+       console.error (error)
      }  
  }
  
@@ -41,7 +42,7 @@ const updateProduct = async productUpdated => {
       const result = await productReposity.updateStock(productsInStock) 
       return result
   } catch (error) {
-      throw error
+      console.error (error)
     }  
  }
  

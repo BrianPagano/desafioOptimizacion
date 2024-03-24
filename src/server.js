@@ -9,6 +9,7 @@ const Messages = require ('./DAO/models/messages.model')
 const session = require('express-session');
 const initializePassport = require('./configs/passport.config')
 const passport = require('passport')
+const errorMiddleware = require('./middlewares/errors/errors-middleware')
 
 const app = express()
 
@@ -83,6 +84,8 @@ app.locals.io = io
 mongoConnect()
 
 router(app)
+
+app.use(errorMiddleware)
 
 
 

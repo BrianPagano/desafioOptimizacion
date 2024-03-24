@@ -7,6 +7,9 @@ const calculateSubtotalAndTotal = require('../utils/calculoTotales-Cart.util.js'
 const authorization = require('../middlewares/authorization-middleware.js')
 const NewPurchaseDTO = require('../DTO/new-purchase.dto.js')
 const separateStocks  = require('../utils/separateStocks.util')
+const CustomError = require('../handlers/errors/Custom-Error');
+const TYPES_ERROR = require('../handlers/errors/types.errors');
+const EErrors = require('../handlers/errors/enum-errors');
 
 
 //mostrar el carrito elegido
@@ -68,25 +71,35 @@ router.post('/', async (req, res) => {
 })
 
 //agregar producto indicando el carrito (cid) y el producto (pid)
-router.post('/:cid/products/:pid', authorization('user'), async (req, res) => {
+router.post('/:cid/products/:pid', authorization('user'), async (req, res, next) => {
     try {
         const { cid, pid } = req.params
         const product = await ProductsService.getProductByID(pid)
 
         if (!product) {
-            return res.status(404).json({ error: 'El producto con el ID proporcionado no existe.' })
+            CustomError.createError({
+                name: TYPES_ERROR.PRODUCT_NOT_FOUND,
+                cause: 'El producto con el ID proporcionado no existe.',
+                message: 'El producto con el ID proporcionado no existe.',
+                code: EErrors.NOT_FOUND,
+            })
         }
+
         const result = await CartService.addProductInCart(cid, pid)
         if (result.success) {
             // Actualizar el valor de user.cart en la sesión del usuario
             req.session.user.cart = cid
             res.status(201).json({ message: result.message })
         } else {
-            res.status(500).json({ error: result.message })
+            CustomError.createError({
+                name: TYPES_ERROR.INTERNAL_SERVER_ERROR,
+                cause: 'Error al agregar el producto al carrito.',
+                message: result.message,
+                code: EErrors.INTERNAL_SERVER_ERROR,
+            })
         }
-    } catch (error) {
-        console.error('Error al cargar productos:', error.message)
-        res.status(500).json({ error: 'Internal Server Error' })
+    }  catch (error) {
+        next(error)
     }
 })
 
